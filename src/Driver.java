@@ -34,6 +34,8 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 	int targetX = 0;
 	int targetY = 0;
 	double speed = 10.0;
+	double dirX = 1;
+	double dirY =1;
 	Ezreal ezreal;
 	Background background;
 
@@ -53,6 +55,8 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 		ArrayList bullets = ezreal.getBullets();
 		for (int i = 0; i < bullets.size(); i++) {
 			Bullet b = (Bullet) bullets.get(i);
+			b.setxVelocity(ezreal.getEzQX());
+			b.setyVelocity(ezreal.getEzQY());
 			b.paint(g);
 		}
 		g.drawRect(ezreal.getX(), ezreal.getY(), 145, 170);
@@ -118,6 +122,24 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 			}
 		}
 		repaint();
+		
+
+	}
+
+	public int getTargetX() {
+		return targetX;
+	}
+
+	public void setTargetX(int targetX) {
+		this.targetX = targetX;
+	}
+
+	public int getTargetY() {
+		return targetY;
+	}
+
+	public void setTargetY(int targetY) {
+		this.targetY = targetY;
 	}
 
 	Timer t;
@@ -125,8 +147,24 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode() == 81) { // shoot
+			
+			
+			PointerInfo a = MouseInfo.getPointerInfo();
+			Point b = a.getLocation();
+			int targetX = (int) b.getX();
+			int targetY = (int) b.getY();
+			double vx = (double) targetX - (ezreal.getX() + (double) 145 / 2);
+			double vy = (double) targetY - (ezreal.getY() + (double) 170 / 2);
+			
+			double distance = Math.sqrt((vx * vx) + (vy * vy));
+
+
+			dirX = vx / distance;
+			dirY = vy / distance;
+			ezreal.setEzQX(dirX*10);
+			ezreal.setEzQY(dirY*10);
 			ezreal.fire();
-			System.out.println(targetX + targetY);
+
 		}
 	}
 
@@ -144,6 +182,8 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
+		
+		
 		if (SwingUtilities.isRightMouseButton(e)) {
 			// Point target = MouseInfo.getPointerInfo().getLocation();
 			PointerInfo a = MouseInfo.getPointerInfo();
