@@ -7,6 +7,7 @@ import java.awt.Point;
 import java.awt.PointerInfo;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
 import java.awt.geom.AffineTransform;
 import java.net.URL;
 
@@ -19,6 +20,7 @@ public class Bullet {
 	private double finalX;
 	private int initialY;
 	private double finalY;
+
 	private boolean visible;
 
 	public Bullet(String filename, int initialX, double finalX, int initialY,
@@ -31,60 +33,14 @@ public class Bullet {
 		init(initialX, initialY);
 	}
 
-	public void shootBullet() {
+	public void update() {
 		PointerInfo a = MouseInfo.getPointerInfo();
 		Point b = a.getLocation();
 		finalX = (int) b.getX();
 		finalY = (int) b.getY();
+		System.out.println(finalX);
+		System.out.println(finalY);	
 
-	//	double bulletVelocity = 100; // however fast you want your bullet to
-										// travel
-										// double angle = Math.atan2(finalX -
-										// initialX, finalY - initialY);
-		// xVelocity = (bulletVelocity) * Math.cos(angle);
-		// yVelocity = (bulletVelocity) * Math.sin(angle);
-
-		double radians = Math.toRadians(Math.atan2(finalY - initialY, finalX
-				- initialX));
-
-		if (radians < 0) {
-			radians += 2 * Math.PI;
-		}
-
-		if (finalX < initialX && finalY < initialY) {
-
-			while (initialX > 0 || initialY > 0) {
-
-				initialX -= Math.cos(radians);
-				initialY -= Math.sin(radians);
-
-			}
-		}
-
-		if (finalX > initialX && finalY < initialY) {
-
-			while (initialX < 1600 || initialY > 0) {
-
-				initialX += Math.cos(radians);
-				initialY -= Math.sin(radians);
-
-			}
-		}
-
-		if (finalX < initialX && finalY > initialY) {
-
-			while (initialX > 0 || initialY < 1600) {
-
-				initialX -= Math.cos(radians);
-				initialY += Math.sin(radians);
-
-			}
-		}
-	}
-
-	public void update() {
-		initialX += 1;
-		initialY += 1;
 	}
 
 	public void setX(int newX) { // set x position
@@ -108,9 +64,79 @@ public class Bullet {
 	public void paint(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
 		g2.drawImage(img, tx, null);
-		initialX += xVelocity;
-		initialY += yVelocity;
+
+		
+//		double radians = Math.toRadians(Math.atan2(targetY - initialY, targetX
+//				- initialX));
+//
+//		if (radians < 0) {
+//			radians += 2 * Math.PI;
+//		}
+//
+//		if (targetX < initialX && targetY < initialY) {
+//
+//			while (initialX > 0 || initialY > 0) {
+//
+//				initialX -= Math.cos(radians);
+//				initialY -= Math.sin(radians);
+//
+//			}
+//		}
+//
+//		if (targetX > initialX && targetY < initialY) {
+//
+//			while (initialX < 1600 || initialY > 0) {
+//
+//				initialX += Math.cos(radians);
+//				initialY -= Math.sin(radians);
+//
+//			}
+//		}
+//
+//		if (targetX < initialX && targetY > initialY) {
+//
+//			while (initialX > 0 || initialY < 1600) {
+//
+//				initialX -= Math.cos(radians);
+//				initialY += Math.sin(radians);
+//
+//			}
+//		}
+		initialX +=xVelocity;
+		initialY +=yVelocity;
 		init(initialX, initialY);
+	}
+
+	public double getxVelocity() {
+		return xVelocity;
+	}
+
+	public void setxVelocity(double xVelocity) {
+		this.xVelocity = xVelocity;
+	}
+
+	public double getyVelocity() {
+		return yVelocity;
+	}
+
+	public void setyVelocity(double yVelocity) {
+		this.yVelocity = yVelocity;
+	}
+
+	public int getInitialX() {
+		return initialX;
+	}
+
+	public void setInitialX(int initialX) {
+		this.initialX = initialX;
+	}
+
+	public int getInitialY() {
+		return initialY;
+	}
+
+	public void setInitialY(int initialY) {
+		this.initialY = initialY;
 	}
 
 	private void init(double a, double b) {
@@ -142,5 +168,24 @@ public class Bullet {
 	public boolean isVisible() {
 		return visible;
 	}
+	public double getFinalX() {
+		return finalX;
+	}
+
+	public void setFinalX(double finalX) {
+		this.finalX = finalX;
+	}
+
+	public double getFinalY() {
+		return finalY;
+	}
+
+	public void setFinalY(double finalY) {
+		this.finalY = finalY;
+	}
+	public void actionPerformed(ActionEvent arg0) {
+		update();
+	}
+	
 
 }

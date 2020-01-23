@@ -12,7 +12,8 @@ public class Ezreal {
 	private int width, height;
 	private Image img; 
 	private ArrayList<Bullet> bullets = new ArrayList<Bullet>();
-
+	private double ezQX = 1;
+	private double ezQY = 1;
 	// write the constructor for the frog which
 	// takes in a String fileName that will be used for the image setup.
 
@@ -116,6 +117,22 @@ public class Ezreal {
 	public double getVx() { // get x position
 		// TODO Auto-generated method stub
 		return vx;
+	}
+
+	public double getEzQX() {
+		return ezQX;
+	}
+
+	public void setEzQX(double ezQX) {
+		this.ezQX = ezQX;
+	}
+
+	public double getEzQY() {
+		return ezQY;
+	}
+
+	public void setEzQY(double ezQY) {
+		this.ezQY = ezQY;
 	}
 
 }
