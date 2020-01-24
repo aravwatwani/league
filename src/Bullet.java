@@ -25,21 +25,22 @@ public class Bullet {
 
 	public Bullet(String filename, int initialX, double finalX, int initialY,
 			double finalY) {
-		width = 100;
-		height = 100;
+		width = 60;
+		height = 60;
 		this.initialX = initialX;
 		this.initialY = initialY;
 		img = getImage("bullet.png");
+
 		init(initialX, initialY);
 	}
 
 	public void update() {
-		PointerInfo a = MouseInfo.getPointerInfo();
-		Point b = a.getLocation();
-		finalX = (int) b.getX();
-		finalY = (int) b.getY();
-		System.out.println(finalX);
-		System.out.println(finalY);	
+		// PointerInfo a = MouseInfo.getPointerInfo();
+		// Point b = a.getLocation();
+		// finalX = (int) b.getX();
+		// finalY = (int) b.getY();
+		// System.out.println(finalX);
+		// System.out.println(finalY);
 
 	}
 
@@ -64,46 +65,8 @@ public class Bullet {
 	public void paint(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
 		g2.drawImage(img, tx, null);
-
-		
-//		double radians = Math.toRadians(Math.atan2(targetY - initialY, targetX
-//				- initialX));
-//
-//		if (radians < 0) {
-//			radians += 2 * Math.PI;
-//		}
-//
-//		if (targetX < initialX && targetY < initialY) {
-//
-//			while (initialX > 0 || initialY > 0) {
-//
-//				initialX -= Math.cos(radians);
-//				initialY -= Math.sin(radians);
-//
-//			}
-//		}
-//
-//		if (targetX > initialX && targetY < initialY) {
-//
-//			while (initialX < 1600 || initialY > 0) {
-//
-//				initialX += Math.cos(radians);
-//				initialY -= Math.sin(radians);
-//
-//			}
-//		}
-//
-//		if (targetX < initialX && targetY > initialY) {
-//
-//			while (initialX > 0 || initialY < 1600) {
-//
-//				initialX -= Math.cos(radians);
-//				initialY += Math.sin(radians);
-//
-//			}
-//		}
-		initialX +=xVelocity;
-		initialY +=yVelocity;
+		initialX += xVelocity;
+		initialY += yVelocity;
 		init(initialX, initialY);
 	}
 
@@ -142,6 +105,12 @@ public class Bullet {
 	private void init(double a, double b) {
 		tx.setToTranslation(a, b);
 	}
+	
+	public boolean collided(int ox, int oy, int ow, int oh) {
+		Rectangle obs = new Rectangle(ox, oy, ow, oh);
+		Rectangle bullet = new Rectangle(x, y, width, height);
+		return obs.intersects(bullet);
+	}
 
 	// converts image to make it drawable in paint
 	private Image getImage(String path) {
@@ -168,6 +137,7 @@ public class Bullet {
 	public boolean isVisible() {
 		return visible;
 	}
+
 	public double getFinalX() {
 		return finalX;
 	}
@@ -183,9 +153,9 @@ public class Bullet {
 	public void setFinalY(double finalY) {
 		this.finalY = finalY;
 	}
+
 	public void actionPerformed(ActionEvent arg0) {
 		update();
 	}
-	
 
 }

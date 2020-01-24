@@ -1,5 +1,4 @@
 // league
-
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -17,6 +16,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Vector;
+import java.util.Random;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -33,11 +33,13 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 	int screen_height = 1600;
 	int targetX = 0;
 	int targetY = 0;
-	double speed = 10.0;
+	double speed = 5.0;
 	double dirX = 1;
-	double dirY =1;
+	double dirY = 1;
+
 	Ezreal ezreal;
 	Background background;
+	ArrayList<Teemo> teemos = new ArrayList<Teemo>();
 
 	public void paint(Graphics g) {
 
@@ -52,16 +54,67 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 
 		background.paint(g);
 		ezreal.paint(g); // paint sprite
+
 		ArrayList bullets = ezreal.getBullets();
+
 		for (int i = 0; i < bullets.size(); i++) {
 			Bullet b = (Bullet) bullets.get(i);
-			b.setxVelocity(ezreal.getEzQX());
-			b.setyVelocity(ezreal.getEzQY());
+			g.drawRect(b.getInitialX(), b.getInitialY(), 60, 60);
+
+			// b.setxVelocity(ezreal.getEzQX());
+			// b.setyVelocity(ezreal.getEzQY());
 			b.paint(g);
+			if (b.getInitialX() > 1600 || b.getInitialY() > 1600
+					|| b.getInitialX() < 0 || b.getInitialY() < 0) {
+				bullets.remove(b);
+			}
+
 		}
-		g.drawRect(ezreal.getX(), ezreal.getY(), 145, 170);
-		
+		for (int i = 0; i < teemos.size(); i++) {
+			Teemo t = (Teemo) teemos.get(i);
+			g.drawRect(t.getX(), t.getY(), 105, 105);
+			t.paint(g);
+			if (t.getX() > 1600 || t.getY() > 1600
+					|| t.getX() < 0 || t.getY() < 0) {
+				bullets.remove(t);
+			}
+
+		}
+		if(teemos.size()<5){
+		Teemo t1 = new Teemo("teemo.png", (int) ((Math.random()) * 1600),
+				ezreal.getX() + (double) 145 / 2,
+				(int) ((Math.random()) * 1600), ezreal.getY() + (double) 145
+						/ 2);
+		teemos.add(t1);
+
+		double vecX = (double) ezreal.getX() - (t1.getX() + (double) 105 / 2);
+		double vecY = (double) ezreal.getY() - (t1.getY() + (double) 105 / 2);
+
+		double d = Math.sqrt((vecX*vecX)
+				+ (vecY*vecY));
+
+		double directionX = vecX / d;
+		double directionY = vecY / d;
+
+		t1.setVx(directionX / 100);
+		t1.setVy(directionY / 100);
+		}
+		for (int i = 0; i < bullets.size(); i++) {
+			for (int j = 0; j < teemos.size(); j++) {
+				Teemo t1 = (Teemo) teemos.get(i);
+				Bullet b = (Bullet) bullets.get(i);
+				t1 = (Teemo) teemos.get(j);
+				if (b.collided(t1.getX(), t1.getY(), t1.getWidth(),
+						t1.getHeight())) {
+					teemos.remove(t1);
+					bullets.remove(b);
+				}
+			}
+		}
 	}
+
+	// g.drawRect(ezreal.getX(), ezreal.getY(), 145, 170);
+	// g.drawRect(teemo.getX(), teemo.getY(), 105, 105);
 
 	Font font = new Font("Courier New", 1, 50);
 	Font font2 = new Font("Courier New", 1, 30);
@@ -121,8 +174,8 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 				bullets.remove(i);
 			}
 		}
+
 		repaint();
-		
 
 	}
 
@@ -143,35 +196,22 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 	}
 
 	Timer t;
+	double lastTime = 0;
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if (e.getKeyCode() == 81) { // shoot
-			
-			
-			PointerInfo a = MouseInfo.getPointerInfo();
-			Point b = a.getLocation();
-			int targetX = (int) b.getX();
-			int targetY = (int) b.getY();
-			double vx = (double) targetX - (ezreal.getX() + (double) 145 / 2);
-			double vy = (double) targetY - (ezreal.getY() + (double) 170 / 2);
-			
-			double distance = Math.sqrt((vx * vx) + (vy * vy));
 
-
-			dirX = vx / distance;
-			dirY = vy / distance;
-			ezreal.setEzQX(dirX*10);
-			ezreal.setEzQY(dirY*10);
+		double coolDownInMillis = 600;
+		if ((System.currentTimeMillis() > lastTime + coolDownInMillis)
+				&& e.getKeyCode() == 81) {
 			ezreal.fire();
-
+			lastTime = System.currentTimeMillis();
 		}
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
 
-		
 	}
 
 	@Override
@@ -182,8 +222,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		
-		
+
 		if (SwingUtilities.isRightMouseButton(e)) {
 			// Point target = MouseInfo.getPointerInfo().getLocation();
 			PointerInfo a = MouseInfo.getPointerInfo();
@@ -237,7 +276,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		
+
 	}
 
 	@Override

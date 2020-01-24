@@ -1,19 +1,24 @@
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.MouseInfo;
+import java.awt.Point;
+import java.awt.PointerInfo;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.geom.AffineTransform;
 import java.net.URL;
 import java.util.ArrayList;
+
 public class Ezreal {
 	private int x, y; // position of a frog
 	private double vx, vy; // velocity
 	private int width, height;
-	private Image img; 
+	private Image img;
 	private ArrayList<Bullet> bullets = new ArrayList<Bullet>();
 	private double ezQX = 1;
 	private double ezQY = 1;
+
 	// write the constructor for the frog which
 	// takes in a String fileName that will be used for the image setup.
 
@@ -54,9 +59,26 @@ public class Ezreal {
 	}
 
 	public void fire() {
-		Bullet b = new Bullet("bullet.png", x, getX() + (double) 145 / 2, y,
+
+		PointerInfo a = MouseInfo.getPointerInfo();
+		Point b = a.getLocation();
+
+		int targetX = (int) b.getX();
+		int targetY = (int) b.getY();
+		double vx = (double) targetX - (x + (double) 145 / 2);
+		double vy = (double) targetY - (y + (double) 170 / 2);
+
+		double distance = Math.sqrt((vx * vx) + (vy * vy));
+
+		double dirX = vx / distance;
+		double dirY = vy / distance;
+
+		Bullet b1 = new Bullet("bullet.png", x, getX() + (double) 145 / 2, y,
 				getY() + (double) 145 / 2);
-		bullets.add(b);
+		bullets.add(b1);
+		b1.setxVelocity(dirX*15);
+		b1.setyVelocity(dirY*15);
+		
 	}
 
 	public ArrayList getBullets() {
