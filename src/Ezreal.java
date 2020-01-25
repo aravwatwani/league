@@ -73,12 +73,11 @@ public class Ezreal {
 		double dirX = vx / distance;
 		double dirY = vy / distance;
 
-		Bullet b1 = new Bullet("bullet.png", x, getX() + (double) 145 / 2, y,
-				getY() + (double) 145 / 2);
+		Bullet b1 = new Bullet("bullet.png", x, getX() + (double) 145 / 2, y, getY() + (double) 145 / 2);
 		bullets.add(b1);
-		b1.setxVelocity(dirX*15);
-		b1.setyVelocity(dirY*15);
-		
+		b1.setxVelocity(dirX * 15);
+		b1.setyVelocity(dirY * 15);
+
 	}
 
 	public ArrayList getBullets() {

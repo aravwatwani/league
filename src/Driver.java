@@ -1,3 +1,4 @@
+
 // league
 import java.awt.Color;
 import java.awt.Font;
@@ -26,8 +27,7 @@ import javax.swing.Timer;
 import java.awt.image.*;
 import java.awt.geom.AffineTransform;
 
-public class Driver extends JPanel implements ActionListener, KeyListener,
-		MouseListener, MouseMotionListener {
+public class Driver extends JPanel implements ActionListener, KeyListener, MouseListener, MouseMotionListener {
 
 	int screen_width = 1600;
 	int screen_height = 1600;
@@ -64,53 +64,41 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 			// b.setxVelocity(ezreal.getEzQX());
 			// b.setyVelocity(ezreal.getEzQY());
 			b.paint(g);
-			if (b.getInitialX() > 1600 || b.getInitialY() > 1600
-					|| b.getInitialX() < 0 || b.getInitialY() < 0) {
+			if (b.getInitialX() > 1600 || b.getInitialY() > 1600 || b.getInitialX() < 0 || b.getInitialY() < 0) {
 				bullets.remove(b);
 			}
-
 		}
+		Teemo t1 = new Teemo("teemo.png", (int) ((Math.random()) * 1600), ezreal.getX() + (double) 145 / 2,
+				(int) ((Math.random()) * 1600), ezreal.getY() + (double) 145 / 2);
+		if (teemos.size() < 5) {
+			teemos.add(t1);
+		}
+
 		for (int i = 0; i < teemos.size(); i++) {
+
 			Teemo t = (Teemo) teemos.get(i);
 			g.drawRect(t.getX(), t.getY(), 105, 105);
 			t.paint(g);
-			if (t.getX() > 1600 || t.getY() > 1600
-					|| t.getX() < 0 || t.getY() < 0) {
-				bullets.remove(t);
-			}
+
+			double distX = (double) ((double) ezreal.getX() + ((double) (140 / 2))) - (t.getX() + ((double) (105 / 2)));
+			t.setVx(distX / 120);
+			double distY = (double) ((double) ezreal.getY() + ((double) (170 / 2))) - (t.getY() + ((double) (105 / 2)));
+
+			t.setVy(distY / 120);
 
 		}
-		if(teemos.size()<5){
-		Teemo t1 = new Teemo("teemo.png", (int) ((Math.random()) * 1600),
-				ezreal.getX() + (double) 145 / 2,
-				(int) ((Math.random()) * 1600), ezreal.getY() + (double) 145
-						/ 2);
-		teemos.add(t1);
 
-		double vecX = (double) ezreal.getX() - (t1.getX() + (double) 105 / 2);
-		double vecY = (double) ezreal.getY() - (t1.getY() + (double) 105 / 2);
-
-		double d = Math.sqrt((vecX*vecX)
-				+ (vecY*vecY));
-
-		double directionX = vecX / d;
-		double directionY = vecY / d;
-
-		t1.setVx(directionX / 100);
-		t1.setVy(directionY / 100);
-		}
-		for (int i = 0; i < bullets.size(); i++) {
-			for (int j = 0; j < teemos.size(); j++) {
-				Teemo t1 = (Teemo) teemos.get(i);
-				Bullet b = (Bullet) bullets.get(i);
-				t1 = (Teemo) teemos.get(j);
-				if (b.collided(t1.getX(), t1.getY(), t1.getWidth(),
-						t1.getHeight())) {
-					teemos.remove(t1);
-					bullets.remove(b);
-				}
-			}
-		}
+//		for (int i = 0; i < bullets.size(); i++) {
+//			for (int j = 0; j < teemos.size(); j++) {
+//				Bullet b = (Bullet) bullets.get(i);
+//				t1 = (Teemo) teemos.get(j);
+//				if (b.collided(t1.getX(), t1.getY(), t1.getWidth(),
+//						t1.getHeight())) {
+//					teemos.remove(t1);
+//					bullets.remove(b);
+//				}
+//			}
+//		}
 	}
 
 	// g.drawRect(ezreal.getX(), ezreal.getY(), 145, 170);
@@ -121,11 +109,10 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 
 	public void update() {
 		ezreal.move();
-		if ((ezreal.getX() + (double) 145 / 2 > targetX - (double) 145 / 2 && ezreal
-				.getX() + (double) 145 / 2 < targetX + (double) 145 / 2)
-				&& (ezreal.getY() + (double) 170 / 2 < targetY + (double) 170
-						/ 2 && ezreal.getY() + (double) 170 / 2 > targetY
-						- (double) 170 / 2)) {
+		if ((ezreal.getX() + (double) 145 / 2 > targetX - (double) 145 / 2
+				&& ezreal.getX() + (double) 145 / 2 < targetX + (double) 145 / 2)
+				&& (ezreal.getY() + (double) 170 / 2 < targetY + (double) 170 / 2
+						&& ezreal.getY() + (double) 170 / 2 > targetY - (double) 170 / 2)) {
 			ezreal.setVx(0);
 			ezreal.setVy(0);
 		}
@@ -164,17 +151,6 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 		t.start();
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		f.setVisible(true);
-
-		ArrayList bullets = ezreal.getBullets();
-		for (int i = 0; i < bullets.size(); i++) {
-			Bullet b = (Bullet) bullets.get(i);
-			if (b.isVisible() == true) {
-				b.update();
-			} else {
-				bullets.remove(i);
-			}
-		}
-
 		repaint();
 
 	}
@@ -202,8 +178,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener,
 	public void keyPressed(KeyEvent e) {
 
 		double coolDownInMillis = 600;
-		if ((System.currentTimeMillis() > lastTime + coolDownInMillis)
-				&& e.getKeyCode() == 81) {
+		if ((System.currentTimeMillis() > lastTime + coolDownInMillis) && e.getKeyCode() == 81) {
 			ezreal.fire();
 			lastTime = System.currentTimeMillis();
 		}

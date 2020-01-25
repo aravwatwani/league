@@ -12,8 +12,8 @@ import com.sun.javafx.scene.traversal.Direction;
 
 public class Teemo {
 	private int x, y; // position of a frog
-	private double vx =1;
-	private double vy=1;; // velocity
+	private double vx = 0;
+	private double vy = 0; // velocity
 	private boolean alive; // alive or not
 	private int width, height;
 	private Image img; // frog image
@@ -26,7 +26,7 @@ public class Teemo {
 		this.x = x;
 		this.y = y;
 		img = getImage("teemo.png");
-		init(x, y);
+
 	}
 
 //	public void move() { // move function to be called in driver
@@ -55,16 +55,14 @@ public class Teemo {
 //		}
 //	}
 
-
 	private AffineTransform tx = AffineTransform.getTranslateInstance(x, y);
 
 	public void paint(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
 		g2.drawImage(img, tx, null);
-		
 		x += vx;
 		y += vy;
-		init(x,y);
+		init(x, y);
 
 	}
 

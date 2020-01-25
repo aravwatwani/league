@@ -23,8 +23,7 @@ public class Bullet {
 
 	private boolean visible;
 
-	public Bullet(String filename, int initialX, double finalX, int initialY,
-			double finalY) {
+	public Bullet(String filename, int initialX, double finalX, int initialY, double finalY) {
 		width = 60;
 		height = 60;
 		this.initialX = initialX;
@@ -32,16 +31,6 @@ public class Bullet {
 		img = getImage("bullet.png");
 
 		init(initialX, initialY);
-	}
-
-	public void update() {
-		// PointerInfo a = MouseInfo.getPointerInfo();
-		// Point b = a.getLocation();
-		// finalX = (int) b.getX();
-		// finalY = (int) b.getY();
-		// System.out.println(finalX);
-		// System.out.println(finalY);
-
 	}
 
 	public void setX(int newX) { // set x position
@@ -105,7 +94,7 @@ public class Bullet {
 	private void init(double a, double b) {
 		tx.setToTranslation(a, b);
 	}
-	
+
 	public boolean collided(int ox, int oy, int ow, int oh) {
 		Rectangle obs = new Rectangle(ox, oy, ow, oh);
 		Rectangle bullet = new Rectangle(x, y, width, height);
@@ -152,10 +141,6 @@ public class Bullet {
 
 	public void setFinalY(double finalY) {
 		this.finalY = finalY;
-	}
-
-	public void actionPerformed(ActionEvent arg0) {
-		update();
 	}
 
 }
