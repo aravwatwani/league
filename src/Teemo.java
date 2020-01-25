@@ -8,16 +8,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Random;
 
-import com.sun.javafx.scene.traversal.Direction;
-
 public class Teemo {
 	private int x, y; // position of a frog
 	private double vx =1;
 	private double vy=1;; // velocity
-	private boolean alive; // alive or not
 	private int width, height;
 	private Image img; // frog image
-	private Direction direction;
 	private ArrayList<Teemo> teemos = new ArrayList<Teemo>();
 
 	public Teemo(String filename, int x, double finalX, int y, double finalY) {
