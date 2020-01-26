@@ -1,4 +1,3 @@
-
 // league
 import java.awt.Color;
 import java.awt.Font;
@@ -29,233 +28,254 @@ import java.awt.geom.AffineTransform;
 
 public class Driver extends JPanel implements ActionListener, KeyListener, MouseListener, MouseMotionListener {
 
-	int screen_width = 1600;
-	int screen_height = 1600;
-	int targetX = 0;
-	int targetY = 0;
-	double speed = 5.0;
-	double dirX = 1;
-	double dirY = 1;
+    int screen_width = 1600;
+    int screen_height = 1600;
+    int targetX = 0;
+    int targetY = 0;
+    double speed = 5.0;
+    double dirX = 1;
+    double dirY = 1;
 
-	Ezreal ezreal;
-	Background background;
-	ArrayList<Teemo> teemos = new ArrayList<Teemo>();
+    Ezreal ezreal;
+    Background background;
+    ArrayList < Teemo > teemos = new ArrayList < Teemo > ();
+    int score = 0;
 
-	public void paint(Graphics g) {
 
-		super.paintComponent(g);
+    public void paint(Graphics g) {
 
-		g.setFont(font);
-		g.setColor(Color.RED);
-		g.setFont(font2);
-		g.setColor(Color.CYAN);
+        super.paintComponent(g);
 
-		// paint sprite
+        g.setFont(font);
+        g.setColor(Color.RED);
+        g.setFont(font2);
+        g.setColor(Color.CYAN);
+        Font myFont = new Font("Ubuntu", 1, 30);
+        g.setColor(Color.white);
+        g.setFont(myFont);
+        background.paint(g);
+        ezreal.paint(g); // paint sprite
+        g.drawString("Score: " + score, 30, 50);
+        ArrayList bullets = ezreal.getBullets();
 
-		background.paint(g);
-		ezreal.paint(g); // paint sprite
+        Teemo t1 = new Teemo("teemo.png", Math.random(), ezreal.getX() + (double) 145 / 2,
+            (int)((Math.random()) * 1600), ezreal.getY() + (double) 145 / 2);
+        if (teemos.size() < 5) {
+            teemos.add(t1);
+        }
 
-		ArrayList bullets = ezreal.getBullets();
+        for (int i = 0; i < teemos.size(); i++) {
 
-		Teemo t1 = new Teemo("teemo.png", Math.random(), ezreal.getX() + (double) 145 / 2,
-				(int) ((Math.random()) * 1600), ezreal.getY() + (double) 145 / 2);
-		if (teemos.size() < 5) {
-			teemos.add(t1);
-		}
+            Teemo t = (Teemo) teemos.get(i);
+            g.drawRect((int) t.getX(), (int) t.getY(), 105, 105);
+            t.paint(g);
 
-		for (int i = 0; i < teemos.size(); i++) {
+            double distX = (double)((double) ezreal.getX() + ((double)(140 / 2))) - (t.getX() + ((double)(105 / 2)));
+            t.setVx(distX / 200);
+            double distY = (double)((double) ezreal.getY() + ((double)(170 / 2))) - (t.getY() + ((double)(105 / 2)));
 
-			Teemo t = (Teemo) teemos.get(i);
-			g.drawRect((int) t.getX(), (int) t.getY(), 105, 105);
-			t.paint(g);
+            t.setVy(distY / 200);
 
-			double distX = (double) ((double) ezreal.getX() + ((double) (140 / 2))) - (t.getX() + ((double) (105 / 2)));
-			t.setVx(distX / 200);
-			double distY = (double) ((double) ezreal.getY() + ((double) (170 / 2))) - (t.getY() + ((double) (105 / 2)));
+            for (int j = 0; j < bullets.size(); j++) {
+                Bullet b = (Bullet) bullets.get(j);
+                if (t.collided(b.getInitialX(), b.getInitialY(), 60, 60)) {
+                    teemos.remove(i);
+                    bullets.remove(j);
+                    score++;
+                }
+            }
 
-			t.setVy(distY / 200);
+        }
 
-			for (int j = 0; j < bullets.size(); j++) {
-				Bullet b = (Bullet) bullets.get(j);
-				if (t.collided(b.getInitialX(), b.getInitialY(), 60, 60)) {
-					teemos.remove(i);
-					bullets.remove(j);
-				}
-			}
+        for (int k = 0; k < teemos.size(); k++) {
+            Teemo t = (Teemo) teemos.get(k);
+            g.drawRect((int) t.getX(), (int) t.getY(), 105, 105);
+            t.paint(g);
+            double distX = (double)((double) ezreal.getX() + ((double)(140 / 2))) - (t.getX() + ((double)(105 / 2)));
+            t.setVx(distX / 200);
+            double distY = (double)((double) ezreal.getY() + ((double)(170 / 2))) - (t.getY() + ((double)(105 / 2)));
+            t.setVy(distY / 200);
 
-		}
-		for (int i = 0; i < bullets.size(); i++) {
-			Bullet b = (Bullet) bullets.get(i);
-			g.drawRect(b.getInitialX(), b.getInitialY(), 60, 60);
+            if (ezreal.collided((int) t.getX(), (int) t.getY(), t.getWidth(), t.getHeight())) {
+                score--;
+                teemos.remove(k);
+            }
 
-			// b.setxVelocity(ezreal.getEzQX());
-			// b.setyVelocity(ezreal.getEzQY());
-			b.paint(g);
-			if (b.getInitialX() > 1600 || b.getInitialY() > 1600 || b.getInitialX() < 0 || b.getInitialY() < 0) {
-				bullets.remove(b);
-			}
+        }
 
-		}
 
-	}
+        for (int i = 0; i < bullets.size(); i++) {
+            Bullet b = (Bullet) bullets.get(i);
+            g.drawRect(b.getInitialX(), b.getInitialY(), 60, 60);
 
-	// g.drawRect(ezreal.getX(), ezreal.getY(), 145, 170);
-	// g.drawRect(teemo.getX(), teemo.getY(), 105, 105);
+            // b.setxVelocity(ezreal.getEzQX());
+            // b.setyVelocity(ezreal.getEzQY());
+            b.paint(g);
+            if (b.getInitialX() > 1600 || b.getInitialY() > 1600 || b.getInitialX() < 0 || b.getInitialY() < 0) {
+                bullets.remove(b);
+            }
 
-	Font font = new Font("Courier New", 1, 50);
-	Font font2 = new Font("Courier New", 1, 30);
+        }
 
-	public void update() {
-		ezreal.move();
-		if ((ezreal.getX() + (double) 145 / 2 > targetX - (double) 145 / 2
-				&& ezreal.getX() + (double) 145 / 2 < targetX + (double) 145 / 2)
-				&& (ezreal.getY() + (double) 170 / 2 < targetY + (double) 170 / 2
-						&& ezreal.getY() + (double) 170 / 2 > targetY - (double) 170 / 2)) {
-			ezreal.setVx(0);
-			ezreal.setVy(0);
-		}
+    }
 
-	}
+    // g.drawRect(ezreal.getX(), ezreal.getY(), 145, 170);
+    // g.drawRect(teemo.getX(), teemo.getY(), 105, 105);
 
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		update();
-		repaint();
-	}
+    Font font = new Font("Courier New", 1, 50);
+    Font font2 = new Font("Courier New", 1, 30);
 
-	public static void main(String[] arg) {
-		Driver d = new Driver();
-	}
+    public void update() {
+        ezreal.move();
+        if ((ezreal.getX() + (double) 145 / 2 > targetX - (double) 145 / 2 &&
+                ezreal.getX() + (double) 145 / 2 < targetX + (double) 145 / 2) &&
+            (ezreal.getY() + (double) 170 / 2 < targetY + (double) 170 / 2 &&
+                ezreal.getY() + (double) 170 / 2 > targetY - (double) 170 / 2)) {
+            ezreal.setVx(0);
+            ezreal.setVy(0);
+        }
 
-	public Driver() {
-		JFrame f = new JFrame();
-		f.setTitle("League of Legends");
-		f.setSize(screen_width, screen_height);
-		f.setResizable(false);
-		f.addKeyListener(this);
-		f.addMouseListener(this);
+    }
 
-		// sprite instantiation
-		background = new Background("summonersrift.jpg");
-		ezreal = new Ezreal("ezreal.png");
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+        update();
+        repaint();
+    }
 
-		// player.addMouseListener(this);
-		// bg = new Background("background.png");
-		// do not add to frame, call paint on
-		// these objects in paint method
+    public static void main(String[] arg) {
+        Driver d = new Driver();
+    }
 
-		f.add(this);
-		t = new Timer(17, this);
-		t.start();
-		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		f.setVisible(true);
-		repaint();
+    public Driver() {
+        JFrame f = new JFrame();
+        f.setTitle("League of Legends");
+        f.setSize(screen_width, screen_height);
+        f.setResizable(false);
+        f.addKeyListener(this);
+        f.addMouseListener(this);
 
-	}
+        // sprite instantiation
+        background = new Background("summonersrift.jpg");
+        ezreal = new Ezreal("ezreal.png");
 
-	public int getTargetX() {
-		return targetX;
-	}
+        // player.addMouseListener(this);
+        // bg = new Background("background.png");
+        // do not add to frame, call paint on
+        // these objects in paint method
 
-	public void setTargetX(int targetX) {
-		this.targetX = targetX;
-	}
+        f.add(this);
+        t = new Timer(17, this);
+        t.start();
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        f.setVisible(true);
+        repaint();
 
-	public int getTargetY() {
-		return targetY;
-	}
+    }
 
-	public void setTargetY(int targetY) {
-		this.targetY = targetY;
-	}
+    public int getTargetX() {
+        return targetX;
+    }
 
-	Timer t;
-	double lastTime = 0;
+    public void setTargetX(int targetX) {
+        this.targetX = targetX;
+    }
 
-	@Override
-	public void keyPressed(KeyEvent e) {
+    public int getTargetY() {
+        return targetY;
+    }
 
-		double coolDownInMillis = 600;
-		if ((System.currentTimeMillis() > lastTime + coolDownInMillis) && e.getKeyCode() == 81) {
-			ezreal.fire();
-			lastTime = System.currentTimeMillis();
-		}
-	}
+    public void setTargetY(int targetY) {
+        this.targetY = targetY;
+    }
 
-	@Override
-	public void keyReleased(KeyEvent e) {
+    Timer t;
+    double lastTime = 0;
 
-	}
+    @Override
+    public void keyPressed(KeyEvent e) {
 
-	@Override
-	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
+        double coolDownInMillis = 600;
+        if ((System.currentTimeMillis() > lastTime + coolDownInMillis) && e.getKeyCode() == 81) {
+            ezreal.fire();
+            lastTime = System.currentTimeMillis();
+        }
+    }
 
-	}
+    @Override
+    public void keyReleased(KeyEvent e) {
 
-	@Override
-	public void mouseClicked(MouseEvent e) {
+    }
 
-		if (SwingUtilities.isRightMouseButton(e)) {
-			// Point target = MouseInfo.getPointerInfo().getLocation();
-			PointerInfo a = MouseInfo.getPointerInfo();
-			Point b = a.getLocation();
-			targetX = (int) b.getX();
-			targetY = (int) b.getY();
+    @Override
+    public void keyTyped(KeyEvent e) {
+        // TODO Auto-generated method stub
 
-			double vx = (double) targetX - (ezreal.getX() + (double) 145 / 2);
-			double vy = (double) targetY - (ezreal.getY() + (double) 170 / 2);
+    }
 
-			// / System.out.println(targetY - ezreal.getY());
-			// System.out.println(targetX - ezreal.getX());
+    @Override
+    public void mouseClicked(MouseEvent e) {
 
-			double distance = Math.sqrt((vx * vx) + (vy * vy));
+        if (SwingUtilities.isRightMouseButton(e)) {
+            // Point target = MouseInfo.getPointerInfo().getLocation();
+            PointerInfo a = MouseInfo.getPointerInfo();
+            Point b = a.getLocation();
+            targetX = (int) b.getX();
+            targetY = (int) b.getY();
 
-			System.out.println(distance);
+            double vx = (double) targetX - (ezreal.getX() + (double) 145 / 2);
+            double vy = (double) targetY - (ezreal.getY() + (double) 170 / 2);
 
-			double dirX = vx / distance;
-			double dirY = vy / distance;
-			ezreal.setVx((dirX * speed));
-			ezreal.setVy((dirY * speed));
+            // / System.out.println(targetY - ezreal.getY());
+            // System.out.println(targetX - ezreal.getX());
 
-		}
+            double distance = Math.sqrt((vx * vx) + (vy * vy));
 
-	}
+            System.out.println(distance);
 
-	@Override
-	public void mouseEntered(MouseEvent e) {
+            double dirX = vx / distance;
+            double dirY = vy / distance;
+            ezreal.setVx((dirX * speed));
+            ezreal.setVy((dirY * speed));
 
-	}
+        }
 
-	@Override
-	public void mouseExited(MouseEvent e) {
+    }
 
-	}
+    @Override
+    public void mouseEntered(MouseEvent e) {
 
-	public void reset() {
+    }
 
-	}
+    @Override
+    public void mouseExited(MouseEvent e) {
 
-	@Override
-	public void mousePressed(MouseEvent e) {
+    }
 
-	}
+    public void reset() {
 
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
+    }
 
-	}
+    @Override
+    public void mousePressed(MouseEvent e) {
 
-	@Override
-	public void mouseDragged(MouseEvent e) {
+    }
 
-	}
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        // TODO Auto-generated method stub
 
-	@Override
-	public void mouseMoved(MouseEvent arg0) {
-		// TODO Auto-generated method stub
+    }
 
-	}
+    @Override
+    public void mouseDragged(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent arg0) {
+        // TODO Auto-generated method stub
+
+    }
 
 }
