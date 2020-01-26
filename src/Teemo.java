@@ -9,24 +9,37 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Teemo {
-	private int x, y; // position of a frog
-<<<<<<< HEAD
+	private double x, y;
+
 	private double vx = 0;
 	private double vy = 0; // velocity
 	private boolean alive; // alive or not
-=======
-	private double vx =1;
-	private double vy=1;; // velocity
->>>>>>> c37317c0058dd1092f39a9405b09a9a2bf8b06fb
-	private int width, height;
+
+	private int width = 105;
+	private int height = 105;
 	private Image img; // frog image
 	private ArrayList<Teemo> teemos = new ArrayList<Teemo>();
 
-	public Teemo(String filename, int x, double finalX, int y, double finalY) {
+	public Teemo(String filename, double x, double finalX, double y, double finalY) {
 		width = 105;
 		height = 105;
-		this.x = x;
-		this.y = y;
+		if (x < 0.25) {
+			this.x = 0;
+			this.y = Math.random() * 1600;
+		}
+		if (x < 0.5 && x > 0.25) {
+			this.x = 1600;
+			this.y = Math.random() * 1600;
+		}
+		if (x > 0.5 && x < 0.75) {
+			this.x = Math.random() * 1600;
+			this.y = 0;
+		}
+		if (x > 0.75) {
+			this.x = Math.random() * 1600;
+			this.y = 1600;
+		}
+
 		img = getImage("teemo.png");
 
 	}
@@ -41,9 +54,9 @@ public class Teemo {
 		return teemos;
 	}
 
-	public boolean collided(int ox, int oy, int ow, int oh) {
-		Rectangle obs = new Rectangle(ox, oy, ow, oh);
-		Rectangle teemo = new Rectangle(x, y, width, height);
+	public boolean collided(double ox, double oy, int ow, int oh) {
+		Rectangle obs = new Rectangle((int) ox, (int) oy, ow, oh);
+		Rectangle teemo = new Rectangle((int) x, (int) y, width, height);
 		return obs.intersects(teemo);
 	}
 
@@ -83,12 +96,12 @@ public class Teemo {
 		return tempImage;
 	}
 
-	public int getY() { // get y position
+	public double getY() { // get y position
 		// TODO Auto-generated method stub
 		return y;
 	}
 
-	public int getX() { // get x position
+	public double getX() { // get x position
 		// TODO Auto-generated method stub
 		return x;
 	}

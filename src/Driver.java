@@ -57,6 +57,33 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 
 		ArrayList bullets = ezreal.getBullets();
 
+		Teemo t1 = new Teemo("teemo.png", Math.random(), ezreal.getX() + (double) 145 / 2,
+				(int) ((Math.random()) * 1600), ezreal.getY() + (double) 145 / 2);
+		if (teemos.size() < 5) {
+			teemos.add(t1);
+		}
+
+		for (int i = 0; i < teemos.size(); i++) {
+
+			Teemo t = (Teemo) teemos.get(i);
+			g.drawRect((int) t.getX(), (int) t.getY(), 105, 105);
+			t.paint(g);
+
+			double distX = (double) ((double) ezreal.getX() + ((double) (140 / 2))) - (t.getX() + ((double) (105 / 2)));
+			t.setVx(distX / 200);
+			double distY = (double) ((double) ezreal.getY() + ((double) (170 / 2))) - (t.getY() + ((double) (105 / 2)));
+
+			t.setVy(distY / 200);
+
+			for (int j = 0; j < bullets.size(); j++) {
+				Bullet b = (Bullet) bullets.get(j);
+				if (t.collided(b.getInitialX(), b.getInitialY(), 60, 60)) {
+					teemos.remove(i);
+					bullets.remove(j);
+				}
+			}
+
+		}
 		for (int i = 0; i < bullets.size(); i++) {
 			Bullet b = (Bullet) bullets.get(i);
 			g.drawRect(b.getInitialX(), b.getInitialY(), 60, 60);
@@ -67,38 +94,9 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 			if (b.getInitialX() > 1600 || b.getInitialY() > 1600 || b.getInitialX() < 0 || b.getInitialY() < 0) {
 				bullets.remove(b);
 			}
-		}
-		Teemo t1 = new Teemo("teemo.png", (int) ((Math.random()) * 1600), ezreal.getX() + (double) 145 / 2,
-				(int) ((Math.random()) * 1600), ezreal.getY() + (double) 145 / 2);
-		if (teemos.size() < 5) {
-			teemos.add(t1);
-		}
-
-		for (int i = 0; i < teemos.size(); i++) {
-
-			Teemo t = (Teemo) teemos.get(i);
-			g.drawRect(t.getX(), t.getY(), 105, 105);
-			t.paint(g);
-
-			double distX = (double) ((double) ezreal.getX() + ((double) (140 / 2))) - (t.getX() + ((double) (105 / 2)));
-			t.setVx(distX / 120);
-			double distY = (double) ((double) ezreal.getY() + ((double) (170 / 2))) - (t.getY() + ((double) (105 / 2)));
-
-			t.setVy(distY / 120);
 
 		}
 
-//		for (int i = 0; i < bullets.size(); i++) {
-//			for (int j = 0; j < teemos.size(); j++) {
-//				Bullet b = (Bullet) bullets.get(i);
-//				t1 = (Teemo) teemos.get(j);
-//				if (b.collided(t1.getX(), t1.getY(), t1.getWidth(),
-//						t1.getHeight())) {
-//					teemos.remove(t1);
-//					bullets.remove(b);
-//				}
-//			}
-//		}
 	}
 
 	// g.drawRect(ezreal.getX(), ezreal.getY(), 145, 170);
