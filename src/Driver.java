@@ -67,14 +67,14 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
         for (int i = 0; i < teemos.size(); i++) {
 
             Teemo t = (Teemo) teemos.get(i);
-            g.drawRect((int) t.getX(), (int) t.getY(), 105, 105);
+            // g.drawRect((int) t.getX(), (int) t.getY(), 105, 105);
             t.paint(g);
 
             double distX = (double)((double) ezreal.getX() + ((double)(140 / 2))) - (t.getX() + ((double)(105 / 2)));
-            t.setVx(distX / 200);
+            t.setVx(distX / 10000);
             double distY = (double)((double) ezreal.getY() + ((double)(170 / 2))) - (t.getY() + ((double)(105 / 2)));
 
-            t.setVy(distY / 200);
+            t.setVy(distY / 10000);
 
             for (int j = 0; j < bullets.size(); j++) {
                 Bullet b = (Bullet) bullets.get(j);
@@ -89,7 +89,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 
         for (int k = 0; k < teemos.size(); k++) {
             Teemo t = (Teemo) teemos.get(k);
-            g.drawRect((int) t.getX(), (int) t.getY(), 105, 105);
+            // g.drawRect((int) t.getX(), (int) t.getY(), 105, 105);
             t.paint(g);
             double distX = (double)((double) ezreal.getX() + ((double)(140 / 2))) - (t.getX() + ((double)(105 / 2)));
             t.setVx(distX / 200);
@@ -106,8 +106,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 
         for (int i = 0; i < bullets.size(); i++) {
             Bullet b = (Bullet) bullets.get(i);
-            g.drawRect(b.getInitialX(), b.getInitialY(), 60, 60);
-
+            // g.drawRect(b.getInitialX(), b.getInitialY(), 60, 60);
             // b.setxVelocity(ezreal.getEzQX());
             // b.setyVelocity(ezreal.getEzQY());
             b.paint(g);
@@ -158,12 +157,6 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
         // sprite instantiation
         background = new Background("summonersrift.jpg");
         ezreal = new Ezreal("ezreal.png");
-
-        // player.addMouseListener(this);
-        // bg = new Background("background.png");
-        // do not add to frame, call paint on
-        // these objects in paint method
-
         f.add(this);
         t = new Timer(17, this);
         t.start();
@@ -194,12 +187,11 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 
     @Override
     public void keyPressed(KeyEvent e) {
-
-        double coolDownInMillis = 600;
-        if ((System.currentTimeMillis() > lastTime + coolDownInMillis) && e.getKeyCode() == 81) {
+        double coolDownInMillis = 300;
+       	if ((System.currentTimeMillis() > lastTime + coolDownInMillis) && e.getKeyCode() == 81) {
             ezreal.fire();
-            lastTime = System.currentTimeMillis();
-        }
+          	lastTime = System.currentTimeMillis();
+		}
     }
 
     @Override
@@ -235,9 +227,8 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 
             double dirX = vx / distance;
             double dirY = vy / distance;
-            ezreal.setVx((dirX * speed));
-            ezreal.setVy((dirY * speed));
-
+            ezreal.setVx((dirX * speed * 3));
+            ezreal.setVy((dirY * speed * 3));
         }
 
     }
@@ -249,10 +240,6 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 
     @Override
     public void mouseExited(MouseEvent e) {
-
-    }
-
-    public void reset() {
 
     }
 
